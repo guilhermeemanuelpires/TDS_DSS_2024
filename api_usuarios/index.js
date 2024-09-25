@@ -16,15 +16,15 @@ const clientes = [{
 
 app.post("/cadastro", (request, response) => {
 
-    const {id, nome, email, senha } = request.body;
+    const { id, nome, email, senha } = request.body;
 
-    if(!id){
+    if (!id) {
         return response.status(400).send("É obrigatorio enviar o campo id!");
-    }else if(!nome){
+    } else if (!nome) {
         return response.status(400).send("É obrigatorio enviar o campo nome!");
-    }else if(!email){
+    } else if (!email) {
         return response.status(400).send("É obrigatorio enviar o campo email!");
-    }else if(!senha){
+    } else if (!senha) {
         return response.status(400).send("É obrigatorio enviar o campo senha!");
     }
 
@@ -34,20 +34,52 @@ app.post("/cadastro", (request, response) => {
     //     }
     // }
 
-    const existe_id = clientes.filter(item => item.id == id);
-    
-    if(existe_id){
-        return response.status(404).send(`O código ${id} já está em uso!`)
-    }else{
-        clientes.push(request.body);
-    }
-    
+    clientes.filter((item) => {
+        if (item.id == id) {
+            return response.status(404).send(`O código ${id} já está em uso!`)
+        }
+    });
+
+    clientes.push(request.body);
+
     return response.status(200).send(request.body);
 
 })
 
 app.get("/consulta", (request, response) => {
-    response.status(200).send(clientes);
+    return response.status(200).send(clientes);
+})
+
+app.get("/consulta/:id([0-9]+)", (request, response) => {
+    const { id } = request.params;
+
+    const cliente = clientes.filter(item => item.id == id);
+
+    if (!cliente.length) {
+        return response.status(400).send("O código do cliente é inválido!");
+    }
+
+    return response.send(cliente);
+
+})
+
+
+app.delete("/deletar/:id([0-9]+)", (request, reponse) => {
+    const { id } = request.params;
+
+    const index = clientes.findIndex(item => item.id == id);
+
+    if (index === -1){
+        return reponse.status(400).send("Código do cliente não existe")
+    }
+
+    clientes.splice(index, 1);
+
+    return reponse.send(clientes);
+});
+
+app.put("/atualizar", (request, response)=>{
+    
 })
 
 app.listen(8080, () => {
