@@ -69,7 +69,7 @@ app.delete("/deletar/:id([0-9]+)", (request, reponse) => {
 
     const index = clientes.findIndex(item => item.id == id);
 
-    if (index === -1){
+    if (index === -1) {
         return reponse.status(400).send("Código do cliente não existe")
     }
 
@@ -78,8 +78,20 @@ app.delete("/deletar/:id([0-9]+)", (request, reponse) => {
     return reponse.send(clientes);
 });
 
-app.put("/atualizar", (request, response)=>{
-    
+app.put("/atualizar", (request, response) => {
+
+    const { id, nome, email, senha } = request.body;
+
+    clientes.filter(item => {
+        if (item.id === id){
+             item.nome = nome;
+             item.email = email;
+             item.senha = senha;
+            return response.send("Cliente atualizado com sucesso!")
+        }
+    })
+
+    return response.status(400).send("Cliente não encontrado!");
 })
 
 app.listen(8080, () => {
