@@ -1,18 +1,9 @@
 const express = require('express');
+const clienteController = require('../controller/cliente.controller');
 
 const routes = express.Router();
 
-const clientes = [];
 
-routes.post("/cadastro", (req, res) => {
-    const { id, nome, email, senha } = req.body;
-
-    console.log(req.body);
-    clientes.push({
-        id, nome, email, senha
-    })
-
-    res.send(req.body);
-})
+routes.post("/cadastro", clienteController);
 
 module.exports = routes;
