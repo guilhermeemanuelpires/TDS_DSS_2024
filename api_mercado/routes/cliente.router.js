@@ -1,7 +1,7 @@
 const routes = require("express").Router();
 const clienteController = require("../controller/cliente.controller");
-// CRUD
 
+// CRUD
 routes.post("/", clienteController.cadastro);
 routes.get("/", clienteController.consultar);
 routes.put("/:id([0-9]+)", clienteController.atualizar);
