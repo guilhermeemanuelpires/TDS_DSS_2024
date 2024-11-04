@@ -1,7 +1,6 @@
 const conn = require("../mysql-connection");
 
 //CRUD
-
 module.exports = ({
     cadastro: (req, res) => {
         const { nome, telefone } = req.body;
