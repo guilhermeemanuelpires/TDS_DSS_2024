@@ -39,5 +39,36 @@ module.exports = {
             console.log(error);
             return res.status(500).send({ msg: "Erro ao cadastrar um pedido!" });
         }
+    },
+    consultar: async (req, res) => {
+        try {
+
+            const data = await conn.select(
+                "pedido.id",
+                "pedido.id_cliente",
+                "cliente.nome as nome_cliente",
+                "pedido.id_produto",
+                "produto.nome as nome_produto",
+                "pedido.quantidade",
+                "pedido.total"
+            ).from("pedido")
+                .join("cliente", "cliente.id", "pedido.id_cliente")
+                .join("produto", "produto.id", "pedido.id_produto");
+
+            res.status(200).send(data);
+
+        } catch (error) {
+            res.status(500).send({ msg: "Erro ao carregar pedidos" })
+        }
+    },
+
+    deletar: async (req, res) => {
+        const { id } = req.params;
+        try {
+            await conn("pedido").del().where({ id })
+            res.status(200).send({ msg: "Pedido deletado com sucesso" });
+        } catch (error) {
+            res.status(500).send({ msg: "Erro ao deletar pedido" })
+        }
     }
 };
