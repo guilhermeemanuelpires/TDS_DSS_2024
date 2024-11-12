@@ -49,6 +49,7 @@ module.exports = {
                 "cliente.nome as nome_cliente",
                 "pedido.id_produto",
                 "produto.nome as nome_produto",
+                "produto.preco",
                 "pedido.quantidade",
                 "pedido.total"
             ).from("pedido")

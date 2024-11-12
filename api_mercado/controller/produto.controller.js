@@ -18,10 +18,7 @@ module.exports = {
             const produto = await conn("produto").insert({ nome, preco });
 
             return res.status(200).send({
-                id: produto[0],
-                nome,
-                preco,
-                status: 1
+                msg : "Produto cadastrado com sucesso!"
             });
 
         } catch (error) {
@@ -46,7 +43,7 @@ module.exports = {
 
         try {
             const produto = await conn.select().from("produto").where({ id });
-
+            
             if (produto.length <= 0) {
                 return res.status(404).send({ msg: `O código ${id} não existe!` })
             }
@@ -59,12 +56,7 @@ module.exports = {
 
             // UPDATE PRODUTO SET (NOME, PRECO, STATUS) VALUES("PASTEL", 1, true);
 
-            return res.status(200).send({
-                id: produto[0].id,
-                nome,
-                preco,
-                status
-            });
+            return res.status(200).send({ msg : "Produto atualizado com sucesso!"});
 
         } catch (error) {
             console.log(error);
