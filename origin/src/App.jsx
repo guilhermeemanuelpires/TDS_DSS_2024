@@ -1,11 +1,25 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Titulo from "./Titulo.jsx"
 import "./App.css"
-import { useState } from "react";   
+
+const Api = axios.create({
+    baseURL: "http://localhost:8080/"
+});
 
 function App() {
     const [contador, setContador] = useState(1);
     const [nome, setNome] = useState();
     const [email, setEmail] = useState();
+
+    const [alunos, setAlunos ] = useState();
+
+    useEffect(() => {
+        Api.get("aluno").then((response) => {
+            console.log(response.data)
+            setAlunos(response.data)
+        })
+    }, [])
 
     return (
         <>
@@ -19,6 +33,15 @@ function App() {
             )}>-</button>
 
             <h1>Cadastro</h1>
+
+            <ol>
+                {alunos?.map((item,index)=>(
+                    <li key={index}>{item.nome}</li>
+                ))}
+            </ol>
+        
+   
+
             {nome} - {email}
             <div>
                 <input type="text"
@@ -27,16 +50,18 @@ function App() {
                         setNome(e.target.value)
                     )} />
 
-                <input 
-                    type="email" 
+                <input
+                    type="email"
                     placeholder="E-mail"
-                    onChange={(e)=>(
+                    onChange={(e) => (
                         setEmail(e.target.value)
                     )}
-                
                 />
-            </div>   
-               
+                <button>Salvar</button>
+            </div>
+
+
+
         </>
     )
 }
