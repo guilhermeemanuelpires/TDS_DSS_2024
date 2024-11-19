@@ -12,14 +12,25 @@ function App() {
     const [nome, setNome] = useState();
     const [email, setEmail] = useState();
 
-    const [alunos, setAlunos ] = useState();
+    const [alunos, setAlunos] = useState();
 
     useEffect(() => {
-        Api.get("aluno").then((response) => {
-            console.log(response.data)
-            setAlunos(response.data)
-        })
+        consultaAlunos();
     }, [])
+
+    function salvarAluno() {
+        Api.post("aluno", {nome, email}).then((response)=>{
+            console.log(response.data)
+            consultaAlunos();
+        });   
+    }
+
+    function consultaAlunos(){
+        Api.get("aluno").then((response) => {
+            // console.log(response.data)
+            setAlunos(response.data)
+        });
+    }
 
     return (
         <>
@@ -35,14 +46,13 @@ function App() {
             <h1>Cadastro</h1>
 
             <ol>
-                {alunos?.map((item,index)=>(
-                    <li key={index}>{item.nome}</li>
+                {alunos?.map((item, index) => (
+                    <li key={index}>{item.nome} - {item.email}</li>
                 ))}
             </ol>
-        
-   
 
             {nome} - {email}
+
             <div>
                 <input type="text"
                     placeholder="Nome"
@@ -57,7 +67,12 @@ function App() {
                         setEmail(e.target.value)
                     )}
                 />
-                <button>Salvar</button>
+                <button
+                    onClick={() => {
+                        salvarAluno()
+                    }}>
+                    Salvar
+                </button>
             </div>
 
 
