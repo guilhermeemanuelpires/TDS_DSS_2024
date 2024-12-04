@@ -5,16 +5,62 @@ function Cliente() {
 
     const [cliente, setCliente] = useState();
 
+    const [nome, setNome] = useState();
+    const [telefone, setTelefone] = useState();
+
+
     useEffect(() => {
+        carregarDados()
+    }, []);
+
+    function carregarDados() {
         Api.get("cliente").then((response) => {
             setCliente(response.data);
-            console.log(response.data)
+            // console.log(response.data)
         });
-    }, []);
+    }
+
+    function salvar() {
+        Api.post('cliente', { nome, telefone }).then((response) => {
+            console.log(response.status)
+        });
+    }
 
     return (
         <div className="container">
-            <h1>Cliente</h1>
+            <div className="alert alert-warning" role="alert">
+                Apresentar a mensagem
+            </div>
+    
+
+            <h1 className="text-uppercase display-6">Cliente</h1>
+            {nome} - {telefone}
+            <form action="#">
+                <div className="form-group">
+                    <label>Nome</label>
+                    <input type="text" className="form-control" placeholder="Nome"
+                        onChange={(e) => {
+                            setNome(e.target.value)
+                        }}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Telefone</label>
+                    <input type="number" className="form-control" placeholder="Telefone"
+                        onChange={(e) => {
+                            setTelefone(e.target.value)
+                        }}
+                    />
+                </div>
+                <div className="form-group">
+                    <button className="btn btn-primary btn-lg btn-block"
+                        onClick={() => {
+                            salvar()
+                        }}
+                    >Salvar</button>
+                </div>
+            </form>
+
             <table className="table table-striped">
                 <thead className="thead-dark">
                     <tr>
