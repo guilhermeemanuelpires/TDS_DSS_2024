@@ -5,8 +5,10 @@ function Cliente() {
 
     const [cliente, setCliente] = useState();
 
+    const [id, setId] = useState();
     const [nome, setNome] = useState("");
     const [telefone, setTelefone] = useState("");
+    const [status, setStatus] = useState(true)
 
     const [msgAviso, setMsgAviso] = useState("");
     const [msgSucesso, setMsgSucesso] = useState("");
@@ -24,25 +26,66 @@ function Cliente() {
     }
 
     function salvar() {
-        Api.post('cliente', { nome, telefone }).then((response) => {
 
+        if (id) {
+            Api.put("cliente", { id, nome, telefone, status }).then((response) => {
+                if (response.status == 200) {
+                    carregarDados();
+                    //Limpo as variaveis
+                    setId();
+                    setNome("");
+                    setTelefone("");
+                    setStatus(true)
+
+                    dispararMsgSucesso(response.data.msg);
+                }
+            });
+        } else {
+            Api.post('cliente', { nome, telefone }).then((response) => {
+
+                if (response.status == 200) {
+                    carregarDados();
+                    setNome("");
+                    setTelefone("");
+
+                    dispararMsgSucesso(response.data.msg);
+
+                } else if (response.status == 309) {
+                    dispararMsgAviso(response.data.msg);
+                }
+            });
+        }
+
+    }
+
+    function deletar(id) {
+        Api.delete(`cliente/${id}`).then((response) => {
             if (response.status == 200) {
                 carregarDados();
-                setNome("");
-                setTelefone("");
-
-                setMsgSucesso(response.data.msg);
-                setTimeout(() => {
-                    setMsgSucesso("")
-                }, "5000")
-
-            } else if (response.status == 309) {
-                setMsgAviso(response.data.msg);
-                setTimeout(() => {
-                    setMsgAviso("")
-                }, "5000");
+                dispararMsgSucesso(response.data.msg);
             }
         });
+    }
+
+    function editar(item) {
+        setId(item.id)
+        setNome(item.nome);
+        setTelefone(item.telefone);
+        setStatus(item.status);
+    }
+
+    function dispararMsgSucesso(msg) {
+        setMsgSucesso(msg);
+        setTimeout(() => {
+            setMsgSucesso("")
+        }, "5000")
+    }
+
+    function dispararMsgAviso(msg) {
+        setMsgAviso(msg);
+        setTimeout(() => {
+            setMsgAviso("")
+        }, "5000");
     }
 
     return (
@@ -63,7 +106,7 @@ function Cliente() {
             }
 
             <h1 className="text-uppercase display-6">Cliente</h1>
-            {nome} - {telefone}
+            {id}- {nome} - {telefone} - {status}
             <form action="#">
                 <div className="form-group">
                     <label>Nome</label>
@@ -99,6 +142,7 @@ function Cliente() {
                         <th scope="col">NOME</th>
                         <th scope="col">TELEFONE</th>
                         <th scope="col">STATUS</th>
+                        <th scope="col">AÇÃO</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,6 +153,22 @@ function Cliente() {
                             <td>{item.nome}</td>
                             <td>{item.telefone}</td>
                             <td>{item.status}</td>
+                            <td>
+                                <button type="button" className="btn btn-danger"
+                                    onClick={() => {
+                                        deletar(item.id)
+                                    }}
+                                >
+                                    Excluir
+                                </button>
+                                <button type="button" className="btn btn-warning"
+                                    onClick={() => {
+                                        editar(item);
+                                    }}
+                                >
+                                    Editar
+                                </button>
+                            </td>
                         </tr>
                     ))}
 
